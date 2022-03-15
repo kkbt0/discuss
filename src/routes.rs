@@ -1,7 +1,6 @@
 use rocket::serde::json::{serde_json::json, Json, Value};
-use rocket::{delete, get, post, put, response::status::Created, response::Debug};
+use rocket::{ get, post, response::status::Created, response::Debug};
 
-use crate::module::Article;
 use crate::module::{
     DBGetDiscussion, DBInsertDiscussion, FrontPostDiscussion, GetDiscussionAndSonNode,GetDiscussionRange,
 };
@@ -13,41 +12,6 @@ use diesel::{insert_into, prelude::*, QueryDsl, RunQueryDsl};
 
 type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
 
-#[get("/")]
-pub fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/api")]
-pub async fn get_article_list() -> Value {
-    json!({"res": "Test Success!"})
-}
-
-#[get("/api/<in_id>")]
-pub async fn get_article_by_id(in_id: usize) -> Option<Json<Article>> {
-    Some(Json(Article {
-        id: in_id,
-        title: "a title".to_string(),
-        author: "恐咖兵糖".to_string(),
-        content: "一些内容".to_string(),
-        created_at: "2022-02-14 ".to_string(),
-    }))
-}
-
-#[post("/api", format = "json", data = "<article>")]
-pub async fn post_article(article: Json<Article>) -> Value {
-    json!({"res": "Post Success!","post": format!("{:?}", article) })
-}
-
-#[put("/api/<in_id>", format = "json", data = "<article>")]
-pub async fn put_article(in_id: usize, article: Json<Article>) -> Value {
-    json!({"res": "Put Success!","id": in_id,"put": format!("{:?}",article) })
-}
-
-#[delete("/api/<in_id>")]
-pub async fn delete_article(in_id: usize) -> Value {
-    json!({"res": "Delect Success","id": in_id })
-}
 // URL / -> %2F
 // URL : -> %3A
 // URL https://www.ftls.xyz/posts/rust-rocket3/ -> https%3A%2F%2Fwww.ftls.xyz%2Fposts%2Frust-rocket3%2F
@@ -173,26 +137,6 @@ pub async fn get_single_discussion(db: MainDbConn, in_id: i32) -> Option<Json<DB
     .ok()
 }
 
-#[get("/test")]
-pub async fn get_discussion_test(db: MainDbConn) -> Value {
-    let vec = vec![1, 2];
-    let mut ans: Vec<Json<DBGetDiscussion>> = Vec::new();
-    for in_id in vec {
-        ans.push(
-            db.run(move |conn| {
-                discuss_main::table
-                    .filter(discuss_main::id.eq(in_id))
-                    .first(conn)
-            })
-            .await
-            .map(Json)
-            .ok()
-            .unwrap(),
-        )
-    }
-
-    json!({ "as": format!("{:?}", ans) })
-}
 // 根据列表SQL eg: 1,2,3 -> 1 2 3 
 #[get("/dis_many/<in_str>")]
 pub async fn get_discussion_many(db: MainDbConn,in_str: String) -> Option<Json<GetDiscussionRange>> {

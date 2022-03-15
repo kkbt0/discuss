@@ -2,15 +2,6 @@ use crate::schema::*;
 use diesel::{Insertable, Queryable};
 use rocket::serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(crate = "rocket::serde")]
-pub struct Article {
-    pub id: usize,
-    pub title: String,
-    pub author: String,
-    pub content: String,
-    pub created_at: String,
-}
 // get discussion and son_nodes struct
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(crate = "rocket::serde")]
