@@ -4,6 +4,7 @@ table! {
         author -> Text,
         content -> Text,
         created_at -> Text,
+        reply_to -> Integer,
         up -> Integer,
         down -> Integer,
         read_number -> Integer,

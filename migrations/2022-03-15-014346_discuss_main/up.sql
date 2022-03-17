@@ -4,6 +4,7 @@ CREATE TABLE discuss_main (
  author Text NOT NULL,
  content Text NOT NULL,
  created_at Text NOT NULL,
+ reply_to INTEGER NOT NULL,
  up INTEGER NOT NULL,
  down INTEGER NOT NULL,
  read_number INTEGER NOT NULL,

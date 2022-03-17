@@ -39,6 +39,7 @@ pub async fn post_discussion(
         up: 0,
         down: 0,
         read_number: 0,
+        reply_to: front_post_discussion.reply_to.clone(),
         sharded_number: 0,
         father_nodes: father_node,
         son_nodes: "".to_string(),

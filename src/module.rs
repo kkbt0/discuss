@@ -36,6 +36,7 @@ pub struct FrontPostDiscussion {
     pub author: String,
     pub content: String,
     pub father_node: i32,
+    pub reply_to: i32,
 }
 #[derive(Serialize, Deserialize, Clone, Debug, Insertable)]
 #[serde(crate = "rocket::serde")]
@@ -47,6 +48,7 @@ pub struct DBInsertDiscussion {
     pub up: i32,
     pub down: i32,
     pub read_number: i32,
+    pub reply_to: i32,
     pub sharded_number: i32,
     pub father_nodes: i32,
     pub son_nodes: String,
@@ -62,6 +64,7 @@ pub struct DBGetDiscussion {
     pub down: i32,
     pub read_number: i32,
     pub sharded_number: i32,
+    pub reply_to: i32,
     pub father_nodes: Option<i32>,
     pub son_nodes: String,
 }
