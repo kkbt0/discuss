@@ -10,9 +10,9 @@
     <div v-if="dis_main.son_nodes!=''"><div style="color:gray">回复信息id: {{ dis_main.son_nodes }}</div></div>
     <h2>回复</h2>
     <div v-if="child_dis==0"><el-empty description="无回复" /></div>
-    <div  v-for="item in child_dis" :key="item.id">
+    <div v-for="item in child_dis" :key="item.id">
         {{ item.id }}<b>{{ item.author }}</b>&nbsp;&nbsp;to&nbsp;&nbsp;{{ item.reply_to }}<br>
-        {{ item.content }}
+        <p v-html="item.content"></p>
         <div v-if="item.son_nodes!=''">
           <el-link  @click="handleChange(item.id)">查看回复</el-link>  
         </div>
@@ -27,7 +27,7 @@
     />
     <div><br></div>
     <el-button @click="post_discussion">新增</el-button>
-    <el-button @click="get_discussion">刷新</el-button>
+    <el-button @click="get_discussion(this.num)">刷新</el-button>
   </div>
 </template>
 <script>
@@ -60,7 +60,7 @@ this.get_discussion(1)
   methods: {
       jump_to_index() { this.num = 1},
       get_discussion(x) {
-          axios.get("http://api.ftls.xyz/dis/discussion/"+x).then(res => {
+          axios.get("https://api.ftls.xyz/discussion/"+x).then(res => {
               this.dis_main = res.data.main_dis
               this.child_dis = res.data.child_dis
           })
@@ -73,10 +73,10 @@ this.get_discussion(1)
               reply_to: 0
         }
         console.log(data)
-          axios.post("http://api.ftls.xyz/dis/dispost",data,{timeout:1000,headers: {'Content-Type': 'application/json'}}).then(res => {
+          axios.post("https://api.ftls.xyz/dispost",data,{timeout:1000,headers: {'Content-Type': 'application/json'}}).then(res => {
               console.log(res)
           })
-        this.get_discussion()
+        this.get_discussion(this.num)
         },
      handleChange(x) {
          console.log(x)
