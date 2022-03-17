@@ -29,7 +29,8 @@ fn rocket() -> _ {
             "/",
             routes![post_discussion, get_discussion, get_single_discussion,post_discussion_optional],
         )
-        .mount("/", routes![get_discussion_many])
+        .mount("/", routes![del_single_discussion])
+        .mount("/", routes![get_discussion_many,del_discussion_optional])
         .attach(CORS)
 }
 

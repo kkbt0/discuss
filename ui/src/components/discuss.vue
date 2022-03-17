@@ -28,7 +28,10 @@
         <div v-if="child_dis == 0"><el-empty description="无回复" /></div>
         <div v-for="item in child_dis" :key="item.id">
           {{ item.id }}<b>{{ item.author }}</b
-          >&nbsp;&nbsp;to&nbsp;&nbsp;{{ item.reply_to }}<br />
+          >&nbsp;&nbsp;to&nbsp;&nbsp;{{ item.reply_to }}&nbsp;&nbsp;
+          <el-link @click="handleChange(item.id)" type="primary">详细</el-link>&nbsp;&nbsp;
+          <el-link @click="delete_discussion(item.id)" type="danger">删除</el-link>
+          <br />
           <p v-html="item.content"></p>
           <div v-if="item.son_nodes != ''">
             <el-link @click="handleChange(item.id)">查看回复</el-link>
@@ -120,6 +123,11 @@ export default {
           this.textarea = "";
           this.get_discussion(this.num);
         });
+    },
+    delete_discussion(x) {
+      axios.delete("https://api.ftls.xyz/dis_sign_del/" + x).then((res) => {
+        console.log(res);
+      })
     },
     handleChange(x) {
       console.log(x);

@@ -55,3 +55,9 @@ cargo build --target x86_64-unknown-linux-musl
 或
 cargo build --target x86_64-unknown-linux-musl --release 发布构建
 ```
+
+# 线上
+
+API 接口 https://api.ftls.xyz/
+
+Vue Web https://note.ftls.xyz/dis

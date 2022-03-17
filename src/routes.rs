@@ -1,5 +1,5 @@
 use rocket::serde::json::{serde_json::json, Json, Value};
-use rocket::{ get, post, options,response::status::Created, response::Debug};
+use rocket::{ get, post, options,delete,response::status::Created, response::Debug};
 
 use crate::module::{
     DBGetDiscussion, DBInsertDiscussion, FrontPostDiscussion, GetDiscussionAndSonNode,GetDiscussionRange,
@@ -142,6 +142,22 @@ pub async fn get_single_discussion(db: MainDbConn, in_id: i32) -> Option<Json<DB
     .await
     .map(Json)
     .ok()
+}
+
+#[options("/dis_sign_del/<in_id>")]
+pub async fn del_discussion_optional(in_id: i32) -> Value { json!({"res": in_id }) }
+
+// delete discussion by id
+#[delete("/dis_sign_del/<in_id>")]
+pub async fn del_single_discussion(db: MainDbConn, in_id: i32) -> Result<Option<()>>{
+    let affected = db
+        .run(move |conn| {
+            diesel::delete(discuss_main::table)
+                .filter(discuss_main::id.eq(&in_id))
+                .execute(conn)
+        })
+        .await?;
+    Ok((affected == 1).then(|| ()))
 }
 
 // 根据列表SQL eg: 1,2,3 -> 1 2 3 
