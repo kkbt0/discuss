@@ -169,3 +169,5 @@ pub async fn get_discussion_many(db: MainDbConn,in_str: String) -> Option<Json<G
         dis_listy: vev_tem,
     }))
 }
+
+// TODO: nodes_list

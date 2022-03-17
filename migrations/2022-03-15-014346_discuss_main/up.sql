@@ -11,4 +11,9 @@ CREATE TABLE discuss_main (
  sharded_number INTEGER NOT NULL,
  father_nodes INTEGER,
  son_nodes Text NOT NULL
-)
+);
+
+CREATE TABLE main_nodes_list (
+ id INTEGER NOT NULL PRIMARY KEY,
+ nodes_list Text NOT NULL
+);

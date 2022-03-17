@@ -68,3 +68,11 @@ pub struct DBGetDiscussion {
     pub father_nodes: Option<i32>,
     pub son_nodes: String,
 }
+
+// nodes_list struct
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(crate = "rocket::serde")]
+pub struct NodeList {
+    pub id: i32,
+    pub nodes_list: String,
+}
