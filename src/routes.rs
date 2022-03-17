@@ -1,5 +1,5 @@
 use rocket::serde::json::{serde_json::json, Json, Value};
-use rocket::{ get, post, response::status::Created, response::Debug};
+use rocket::{ get, post, options,response::status::Created, response::Debug};
 
 use crate::module::{
     DBGetDiscussion, DBInsertDiscussion, FrontPostDiscussion, GetDiscussionAndSonNode,GetDiscussionRange,
@@ -20,6 +20,9 @@ pub async fn get_url_discussion(in_url: String) -> Value {
     json!({"res": "Jump to a url discuss","from_url":in_url})
 }
 
+// optional 
+#[options("/dispost")]
+pub async fn post_discussion_optional() {}
 // post discussion content from front
 #[post("/dispost", format = "json", data = "<front_post_discussion>")]
 pub async fn post_discussion(
@@ -100,7 +103,10 @@ pub async fn get_discussion(db: MainDbConn, in_id: i32) -> Option<Json<GetDiscus
     let son_nodes_vec_str = son_nodes_string.trim_end().split(" ").collect::<Vec<_>>();
     let mut son_nodes_vec_i32 = Vec::new();
     for i in son_nodes_vec_str {
-        son_nodes_vec_i32.push(i.parse::<i32>().unwrap());
+        match i.parse::<i32>() {
+            Ok(x) => { son_nodes_vec_i32.push(x) }
+            Err(e) => { println!("Err in {}",e) }
+        }
     }
     for in_id in son_nodes_vec_i32 {
         son_nodes_vec_contents.push(

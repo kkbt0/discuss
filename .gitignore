@@ -1,1 +1,5 @@
 /target
+/node_modules
+/ui/node_modules
+/ui/.DS_Store
+/ui/dist

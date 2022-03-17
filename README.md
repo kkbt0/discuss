@@ -48,3 +48,10 @@ class: GET
 
 fn: get_discussion_many
 
+# Build Linux
+
+```
+cargo build --target x86_64-unknown-linux-musl
+或
+cargo build --target x86_64-unknown-linux-musl --release 发布构建
+```
