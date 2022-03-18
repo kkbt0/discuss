@@ -19,8 +19,9 @@
         <p>
           <b>{{ dis_main.id }} {{ dis_main.author }}</b
           ><br />
-          {{ dis_main.content }}<br />
+          <br />
         </p>
+         <p v-html="dis_main.content"></p>
         <div v-if="dis_main.son_nodes != ''">
           <div style="color: gray">回复信息id: {{ dis_main.son_nodes }}</div>
         </div>
@@ -29,7 +30,8 @@
         <div v-for="item in child_dis" :key="item.id">
           {{ item.id }}<b>{{ item.author }}</b
           >&nbsp;&nbsp;to&nbsp;&nbsp;{{ item.reply_to }}&nbsp;&nbsp;
-          <el-link @click="handleChange(item.id)" type="primary">详细</el-link>&nbsp;&nbsp;
+          <el-link @click="handleChange(item.id)" type="primary">详细</el-link
+          >&nbsp;&nbsp;
           <el-link @click="delete_discussion(item.id)" type="danger">删除</el-link>
           <br />
           <p v-html="item.content"></p>
@@ -39,10 +41,34 @@
           <div><br /></div>
         </div>
         <br />
+        <el-col>
+          <div>
+            <el-input
+          v-model="textarea2"
+          class="w-50 m-2"
+          size="large"
+          placeholder="请输入作者"
+        />
+          </div>
+        </el-col>
+        <el-col>
+            <el-button>TO</el-button>
+        </el-col>
+        <el-col>
+          <div>
+            <el-input
+          v-model="textarea3"
+          class="w-50 m-2"
+          size="large"
+          placeholder="回复给"
+        />
+          </div>
+        </el-col>
         <el-input
           v-model="textarea"
           placeholder="输入回复内容"
           :autosize="{ minRows: 5, maxRows: 1000 }"
+          maxlength="1000"
           type="textarea"
         />
         <div style="margin: 100px 0" />
@@ -81,9 +107,14 @@ export default {
         reply_to: 0,
         father_nodes: 0,
         son_nodes: "Null",
+
       },
+      baseurl: "http://127.0.0.1:8000",
+      //baseurl: "https://api.ftls.xyz",
       child_dis: 0,
       textarea: "Hello world!",
+      textarea2: "恐咖兵糖",
+      textarea3: 1,
       num: 1,
     };
   },
@@ -92,7 +123,7 @@ export default {
       this.num = 1;
     },
     get_discussion(x) {
-      axios.get("https://api.ftls.xyz/discussion/" + x).then((res) => {
+      axios.get(this.baseurl+"/discussion/" + x).then((res) => {
         this.dis_main = res.data.main_dis;
         this.child_dis = res.data.child_dis;
       });
@@ -109,12 +140,12 @@ export default {
       var data = {
         father_node: this.num,
         content: this.textarea,
-        author: "恐咖兵糖(回复)",
-        reply_to: 0,
+        author: this.textarea2,
+        reply_to: 1,
       };
       console.log(data);
       axios
-        .post("https://api.ftls.xyz/dispost", data, {
+        .post(this.baseurl+"/dispost", data, {
           timeout: 1000,
           headers: { "Content-Type": "application/json" },
         })
@@ -125,8 +156,9 @@ export default {
         });
     },
     delete_discussion(x) {
-      axios.delete("https://api.ftls.xyz/dis_sign_del/" + x).then((res) => {
+      axios.delete(this.baseurl+"/dis_sign_del/" + x).then((res) => {
         console.log(res);
+        this.get_discussion(this.num);
       })
     },
     handleChange(x) {

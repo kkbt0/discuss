@@ -150,6 +150,37 @@ pub async fn del_discussion_optional(in_id: i32) -> Value { json!({"res": in_id 
 // delete discussion by id
 #[delete("/dis_sign_del/<in_id>")]
 pub async fn del_single_discussion(db: MainDbConn, in_id: i32) -> Result<Option<()>>{
+    let this_dis: Option<Json<DBGetDiscussion>> = db
+    .run(move |conn| {
+        discuss_main::table
+            .filter(discuss_main::id.eq(in_id))
+            .first(conn)
+    })
+    .await
+    .map(Json)
+    .ok();
+    let father_node_id = this_dis.unwrap().into_inner().father_nodes.unwrap();
+    let father_dis: Option<Json<DBGetDiscussion>> = db
+    .run(move |conn| {
+        discuss_main::table
+            .filter(discuss_main::id.eq(father_node_id))
+            .first(conn)
+    })
+    .await
+    .map(Json)
+    .ok();
+    let father_s_son = father_dis.unwrap().into_inner().son_nodes;
+    let old_del_str = in_id.to_string().to_owned()+ " ";
+    dbg!(&old_del_str);
+    dbg!(&father_s_son.replace(&old_del_str,""));
+    let affected2 = db
+        .run(move |conn| {
+            diesel::update(discuss_main::table.filter(discuss_main::id.eq(father_node_id)))
+                .set(son_nodes.eq(father_s_son.replace(&old_del_str,"")))
+                .execute(conn)
+        })
+        .await?;
+
     let affected = db
         .run(move |conn| {
             diesel::delete(discuss_main::table)
@@ -157,7 +188,8 @@ pub async fn del_single_discussion(db: MainDbConn, in_id: i32) -> Result<Option<
                 .execute(conn)
         })
         .await?;
-    Ok((affected == 1).then(|| ()))
+    
+    Ok((affected == 1 && affected2 == 1).then(|| ()))
 }
 
 // 根据列表SQL eg: 1,2,3 -> 1 2 3 
@@ -192,4 +224,7 @@ pub async fn get_discussion_many(db: MainDbConn,in_str: String) -> Option<Json<G
     }))
 }
 
+
+
 // TODO: nodes_list
+
