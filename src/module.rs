@@ -42,7 +42,7 @@ pub struct FrontPostDiscussion {
 #[serde(crate = "rocket::serde")]
 #[table_name = "discuss_main"]
 pub struct DBInsertDiscussion {
-    pub author: String,
+    pub author: i32,
     pub content: String,
     pub created_at: String,
     pub up: i32,
@@ -57,14 +57,14 @@ pub struct DBInsertDiscussion {
 #[serde(crate = "rocket::serde")]
 pub struct DBGetDiscussion {
     pub id: i32,
-    pub author: String,
+    pub author: i32,
     pub content: String,
     pub created_at: String,
+    pub reply_to: i32,
     pub up: i32,
     pub down: i32,
     pub read_number: i32,
     pub sharded_number: i32,
-    pub reply_to: i32,
     pub father_nodes: Option<i32>,
     pub son_nodes: String,
 }
@@ -75,4 +75,22 @@ pub struct DBGetDiscussion {
 pub struct NodeList {
     pub id: i32,
     pub nodes_list: String,
+}
+
+// user_list Query From DB
+#[derive(Serialize, Deserialize, Clone, Debug, Queryable)]
+#[serde(crate = "rocket::serde")]
+pub struct UserKeyIDList {
+    pub id: i32,           // to convent only sign
+    pub key_id: String,    // user password
+    pub show_name: String, // @xxx show
+    pub status: i32,       // 权限等级
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(crate = "rocket::serde")]
+pub struct UserKeyIDListFrontUsed {
+    pub id: i32,
+    pub show_name: String,
+    pub status: i32,
 }

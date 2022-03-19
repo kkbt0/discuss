@@ -1,7 +1,7 @@
 table! {
     discuss_main (id) {
         id -> Integer,
-        author -> Text,
+        author -> Integer,
         content -> Text,
         created_at -> Text,
         reply_to -> Integer,
@@ -21,7 +21,13 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
-    discuss_main,
-    main_nodes_list,
-);
+table! {
+    user_list (id) {
+        id -> Integer,
+        key_id -> Text,
+        show_name -> Text,
+        key_status -> Integer,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(discuss_main, main_nodes_list, user_list,);

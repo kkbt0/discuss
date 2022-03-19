@@ -8,9 +8,9 @@ mod module;
 mod routes;
 mod schema;
 
-use rocket::{Request, Response};
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::Header;
+use rocket::{Request, Response};
 
 use rocket_sync_db_pools::database;
 use routes::*;
@@ -27,10 +27,17 @@ fn rocket() -> _ {
         .mount("/", routes![get_url_discussion])
         .mount(
             "/",
-            routes![post_discussion, get_discussion, get_single_discussion,post_discussion_optional],
+            routes![
+                post_discussion,
+                get_discussion,
+                get_single_discussion,
+                post_discussion_optional
+            ],
         )
         .mount("/", routes![del_single_discussion])
-        .mount("/", routes![get_discussion_many,del_discussion_optional])
+        .mount("/", routes![get_discussion_many, del_discussion_optional])
+        // user name list
+        .mount("/", routes![get_user_by_key_id, get_user_by_id])
         .attach(CORS)
 }
 
@@ -53,6 +60,5 @@ impl Fairing for CORS {
         ));
         response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
-  
     }
 }
